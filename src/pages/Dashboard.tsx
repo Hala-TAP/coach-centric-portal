@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Layout from '@/components/Layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { CalendarDays, Users, MessageSquare, Calendar, ExternalLink, Play } from 'lucide-react';
+import { CalendarDays, Users, MessageSquare, Calendar, ExternalLink, Play, CheckCircle } from 'lucide-react';
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
+  const [calendarConnected, setCalendarConnected] = useState(false);
 
-  // Mock data for demo - only show for existing coaches
-  const hasData = user?.email === 'coach@example.com' && user?.isOnboarded;
+  // Determine state: invitation flow vs sign-in flow
+  const isInvitationFlow = user?.isInvitationFlow;
+  const hasData = user?.email === 'coach@example.com' && user?.isOnboarded && !isInvitationFlow;
   
   const mockStats = hasData ? {
     activeCoachees: 8,
@@ -21,7 +23,12 @@ const Dashboard = () => {
     activeCoachees: 0,
     pendingFeedback: 0,
     upcomingSessions: 0,
-    isCalendarConnected: false
+    isCalendarConnected: calendarConnected
+  };
+
+  const handleConnectCalendar = () => {
+    setCalendarConnected(true);
+    // In a real app, this would integrate with Calendly API
   };
 
   const upcomingSessions = hasData ? [
@@ -58,9 +65,26 @@ const Dashboard = () => {
                     </p>
                   </div>
                 </div>
-                <Button className="ml-4">
+                <Button className="ml-4" onClick={handleConnectCalendar}>
                   Connect Calendar
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Calendar Connected Confirmation */}
+        {mockStats.isCalendarConnected && !hasData && (
+          <Card className="border-green-200 bg-green-50">
+            <CardContent className="p-6">
+              <div className="flex items-center gap-3">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <div>
+                  <h3 className="font-medium text-green-900">Calendar connected successfully!</h3>
+                  <p className="text-sm text-green-700">
+                    You'll start receiving coachee assignments and session bookings soon.
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>

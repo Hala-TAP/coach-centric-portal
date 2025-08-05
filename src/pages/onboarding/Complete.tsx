@@ -10,6 +10,7 @@ const Complete = () => {
   const navigate = useNavigate();
 
   const handleEnterDashboard = () => {
+    // Complete onboarding but keep isInvitationFlow flag to show empty state
     completeOnboarding();
     navigate('/dashboard');
   };

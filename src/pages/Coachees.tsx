@@ -28,9 +28,11 @@ const Coachees = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCoachee, setSelectedCoachee] = useState<any>(null);
   const [newNote, setNewNote] = useState('');
+  const [calendarConnected, setCalendarConnected] = useState(false);
 
-  // Mock data for demo - only show for existing coaches
-  const hasData = user?.email === 'coach@example.com' && user?.isOnboarded;
+  // Determine state: invitation flow vs sign-in flow  
+  const isInvitationFlow = user?.isInvitationFlow;
+  const hasData = user?.email === 'coach@example.com' && user?.isOnboarded && !isInvitationFlow;
 
   const mockCoachees = hasData ? [
     {
@@ -131,6 +133,11 @@ const Coachees = () => {
     }
   };
 
+  const handleConnectCalendar = () => {
+    setCalendarConnected(true);
+    // In a real app, this would integrate with Calendly API
+  };
+
   if (!hasData) {
     return (
       <Layout>
@@ -145,12 +152,22 @@ const Coachees = () => {
               <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">You currently have no assigned coachees</h3>
               <p className="text-muted-foreground mb-6">
-                Connect your calendar to start receiving coachee assignments and session bookings.
+                {calendarConnected 
+                  ? "Your calendar is connected! You'll start receiving coachee assignments soon."
+                  : "Connect your calendar to start receiving coachee assignments and session bookings."
+                }
               </p>
-              <Button>
-                <Calendar className="w-4 h-4 mr-2" />
-                Connect Calendar
-              </Button>
+              {!calendarConnected ? (
+                <Button onClick={handleConnectCalendar}>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Connect Calendar
+                </Button>
+              ) : (
+                <div className="flex items-center justify-center gap-2 text-green-600">
+                  <CheckCircle className="w-5 h-5" />
+                  <span className="font-medium">Calendar Connected</span>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

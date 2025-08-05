@@ -32,6 +32,7 @@ const AppRoutes = () => {
       
       {/* Onboarding Routes */}
       <Route path="/onboarding" element={<SetPassword />} />
+      <Route path="/onboarding/set-password" element={<SetPassword />} />
       <Route path="/onboarding/linkedin" element={<LinkedInProfile />} />
       <Route path="/onboarding/review" element={<ReviewDetails />} />
       <Route path="/onboarding/photo" element={<UploadPhoto />} />

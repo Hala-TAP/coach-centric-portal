@@ -4,20 +4,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import OnboardingLayout from './OnboardingLayout';
+import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff } from 'lucide-react';
 
 const SetPassword = () => {
   const [searchParams] = useSearchParams();
-  const email = searchParams.get('email') || 'coach@example.com';
+  const email = searchParams.get('email') || 'newcoach@example.com';
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const { startInvitationFlow } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === confirmPassword && password.length >= 8) {
+      // Start invitation flow with the email
+      startInvitationFlow(email);
       navigate('/onboarding/linkedin');
     }
   };

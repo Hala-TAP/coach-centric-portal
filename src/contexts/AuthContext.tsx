@@ -13,6 +13,7 @@ interface User {
   preferredCoachees?: number;
   calendlyUrl?: string;
   isOnboarded: boolean;
+  isInvitationFlow?: boolean;
 }
 
 interface AuthContextType {
@@ -21,6 +22,7 @@ interface AuthContextType {
   logout: () => void;
   updateUser: (userData: Partial<User>) => void;
   completeOnboarding: () => void;
+  startInvitationFlow: (email: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -83,10 +85,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const completeOnboarding = () => {
     updateUser({ isOnboarded: true });
+    // Keep isInvitationFlow flag so dashboard shows empty state initially
+  };
+
+  const startInvitationFlow = (email: string) => {
+    const userData: User = {
+      id: Date.now().toString(),
+      email,
+      name: '',
+      isOnboarded: false,
+      isInvitationFlow: true
+    };
+    setUser(userData);
+    localStorage.setItem('coachPortalUser', JSON.stringify(userData));
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser, completeOnboarding }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, completeOnboarding, startInvitationFlow }}>
       {children}
     </AuthContext.Provider>
   );

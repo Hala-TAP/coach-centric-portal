@@ -22,7 +22,8 @@ const LinkedInProfile = () => {
         name: 'Sarah Johnson',
         title: 'Senior Career Coach',
         location: 'New York, NY',
-        linkedinUrl: linkedinUrl
+        linkedinUrl: linkedinUrl,
+        profilePhoto: '/lovable-uploads/cd3003cb-ec58-4b74-b69c-4761cb7ec706.png'
       };
 
       updateUser(mockLinkedInData);
