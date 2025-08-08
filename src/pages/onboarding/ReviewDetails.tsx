@@ -41,7 +41,7 @@ const ReviewDetails = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bio.trim()) return;
+    if (!bio.trim() || bio.length > bioCharacterLimit) return;
     updateUser({
       name,
       location,
@@ -56,6 +56,9 @@ const ReviewDetails = () => {
   };
 
   const bioCharacterLimit = 600;
+  const isOverLimit = bio.length > bioCharacterLimit;
+  const validText = isOverLimit ? bio.slice(0, bioCharacterLimit) : bio;
+  const overLimitText = isOverLimit ? bio.slice(bioCharacterLimit) : '';
 
   return (
     <OnboardingLayout
@@ -143,32 +146,34 @@ const ReviewDetails = () => {
           <Label htmlFor="bio" className="text-base">
             Bio <span className="text-destructive">*</span>
           </Label>
-          <Textarea
-            id="bio"
-            placeholder="Tell us about your coaching experience..."
-            value={bio}
-            onChange={(e) => {
-              const newValue = e.target.value;
-              if (newValue.length <= bioCharacterLimit) {
-                setBio(newValue);
-              }
-            }}
-            className="min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            required
-            aria-describedby="bio-error bio-count"
-          />
-          <div className="flex justify-between items-center text-base">
-            <div id="bio-count" className={`${bio.length >= bioCharacterLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-              {bio.length}/{bioCharacterLimit} characters
-              {bio.length >= bioCharacterLimit && (
-                <span className="ml-2 text-destructive" role="alert">
-                  Character limit reached
+          <div className="relative">
+            <Textarea
+              id="bio"
+              placeholder="Tell us about your coaching experience..."
+              value={validText}
+              onChange={(e) => setBio(e.target.value)}
+              className="min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              required
+              aria-describedby="bio-error bio-count"
+            />
+            {isOverLimit && (
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="min-h-[120px] p-3 text-base whitespace-pre-wrap break-words opacity-0">
+                  {validText}
+                </div>
+                <span className="text-destructive bg-destructive/10 whitespace-pre-wrap break-words">
+                  {overLimitText}
                 </span>
-              )}
+              </div>
+            )}
+          </div>
+          <div className="flex justify-between items-center text-base">
+            <div id="bio-count" className={`${bio.length > bioCharacterLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+              {bio.length}/{bioCharacterLimit} characters
             </div>
-            {!bio.trim() && (
+            {(!bio.trim() || bio.length > bioCharacterLimit) && (
               <div id="bio-error" className="text-destructive" role="alert">
-                Bio is required
+                {!bio.trim() ? 'Bio is required' : 'Bio exceeds 600 character limit'}
               </div>
             )}
           </div>
@@ -177,7 +182,7 @@ const ReviewDetails = () => {
         <Button 
           type="submit" 
           className="w-full h-12 text-base min-h-[40px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          disabled={!bio.trim()}
+          disabled={!bio.trim() || bio.length > bioCharacterLimit}
         >
           Continue
         </Button>
