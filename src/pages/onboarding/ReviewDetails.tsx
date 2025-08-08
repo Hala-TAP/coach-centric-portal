@@ -150,20 +150,18 @@ const ReviewDetails = () => {
             <Textarea
               id="bio"
               placeholder="Tell us about your coaching experience..."
-              value={validText}
+              value={bio}
               onChange={(e) => setBio(e.target.value)}
               className="min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               required
               aria-describedby="bio-error bio-count"
             />
             {isOverLimit && (
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="min-h-[120px] p-3 text-base whitespace-pre-wrap break-words opacity-0">
-                  {validText}
+              <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-md border border-input">
+                <div className="min-h-[120px] p-3 text-base whitespace-pre-wrap break-words bg-background">
+                  <span className="text-foreground">{validText}</span>
+                  <span className="text-destructive bg-destructive/10">{overLimitText}</span>
                 </div>
-                <span className="text-destructive bg-destructive/10 whitespace-pre-wrap break-words">
-                  {overLimitText}
-                </span>
               </div>
             )}
           </div>
