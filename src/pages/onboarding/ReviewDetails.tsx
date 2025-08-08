@@ -41,7 +41,13 @@ const ReviewDetails = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bio.trim() || bio.length > bioCharacterLimit) return;
+    if (!bio.trim() || bio.length > bioCharacterLimit) {
+      if (bio.length > bioCharacterLimit) {
+        // Focus stays on bio field for accessibility
+        document.getElementById('bio')?.focus();
+      }
+      return;
+    }
     updateUser({
       name,
       location,
@@ -152,26 +158,35 @@ const ReviewDetails = () => {
               placeholder="Tell us about your coaching experience..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              className="min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              className={`min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${isOverLimit ? 'relative z-10 text-transparent caret-foreground bg-transparent' : ''}`}
               required
               aria-describedby="bio-error bio-count"
+              style={isOverLimit ? { caretColor: 'hsl(var(--foreground))' } : {}}
             />
             {isOverLimit && (
-              <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-md border border-input">
-                <div className="min-h-[120px] p-3 text-base whitespace-pre-wrap break-words bg-background">
-                  <span className="text-foreground">{validText}</span>
-                  <span className="text-destructive bg-destructive/10">{overLimitText}</span>
-                </div>
+              <div className="absolute inset-0 p-3 text-base whitespace-pre-wrap break-words pointer-events-none overflow-hidden rounded-md border border-input bg-background z-0">
+                <span className="text-foreground">{validText}</span>
+                <span className="text-destructive font-medium">{overLimitText}</span>
               </div>
             )}
           </div>
-          <div className="flex justify-between items-center text-base">
-            <div id="bio-count" className={`${bio.length > bioCharacterLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-              {bio.length}/{bioCharacterLimit} characters
+          <div className="space-y-1">
+            <div id="bio-count" className="text-base">
+              <span className={bio.length > bioCharacterLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}>
+                {bio.length}/{bioCharacterLimit} characters
+              </span>
+              {bio.length > bioCharacterLimit && (
+                <span className="text-destructive font-medium"> - Limit exceeded</span>
+              )}
             </div>
-            {(!bio.trim() || bio.length > bioCharacterLimit) && (
-              <div id="bio-error" className="text-destructive" role="alert">
-                {!bio.trim() ? 'Bio is required' : 'Bio exceeds 600 character limit'}
+            {!bio.trim() && (
+              <div id="bio-error" className="text-destructive text-base" role="alert">
+                Bio is required
+              </div>
+            )}
+            {bio.trim() && bio.length > bioCharacterLimit && (
+              <div className="text-destructive text-base" role="alert">
+                Please reduce your bio to 600 characters or fewer.
               </div>
             )}
           </div>
