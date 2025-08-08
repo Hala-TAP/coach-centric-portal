@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import OnboardingLayout from './OnboardingLayout';
 import { useAuth } from '@/contexts/AuthContext';
-import { Upload, User } from 'lucide-react';
+import { Upload, User, ArrowLeft } from 'lucide-react';
 
 const UploadPhoto = () => {
   const { user, updateUser } = useAuth();
@@ -31,8 +31,8 @@ const UploadPhoto = () => {
     navigate('/onboarding/availability');
   };
 
-  const handleSkip = () => {
-    navigate('/onboarding/availability');
+  const handleBack = () => {
+    navigate('/onboarding/review');
   };
 
   return (
@@ -42,6 +42,16 @@ const UploadPhoto = () => {
       title="Your photo will help coachees get to know you."
       subtitle="Upload a professional headshot"
     >
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={handleBack}
+        className="mb-6 h-10 px-4 text-base"
+        aria-label="Go back to previous step"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back
+      </Button>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="flex flex-col items-center space-y-4">
           {/* Photo Preview */}
@@ -81,22 +91,12 @@ const UploadPhoto = () => {
           </p>
         </div>
 
-        <div className="flex gap-3">
-          <Button 
-            type="button" 
-            variant="outline"
-            onClick={handleSkip}
-            className="flex-1 h-12 text-base"
-          >
-            Skip for now
-          </Button>
-          <Button 
-            type="submit" 
-            className="flex-1 h-12 text-base"
-          >
-            Continue
-          </Button>
-        </div>
+        <Button 
+          type="submit" 
+          className="w-full h-12 text-base"
+        >
+          Continue
+        </Button>
       </form>
     </OnboardingLayout>
   );

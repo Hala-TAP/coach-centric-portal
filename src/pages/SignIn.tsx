@@ -108,9 +108,9 @@ const SignIn = () => {
           </div>
           <div className="mt-4 text-center">
             <p className="text-sm text-muted-foreground">
-              Have an invitation? {' '}
+              First time? {' '}
               <Link to="/onboarding" className="text-primary hover:underline">
-                Complete your setup
+                Complete your coach profile
               </Link>
             </p>
           </div>

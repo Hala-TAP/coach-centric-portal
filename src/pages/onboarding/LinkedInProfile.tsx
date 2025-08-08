@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import OnboardingLayout from './OnboardingLayout';
 import { useAuth } from '@/contexts/AuthContext';
+import { ArrowLeft } from 'lucide-react';
 
 const LinkedInProfile = () => {
   const [linkedinUrl, setLinkedinUrl] = useState('');
@@ -32,6 +33,10 @@ const LinkedInProfile = () => {
     }, 1500);
   };
 
+  const handleBack = () => {
+    navigate('/onboarding/password');
+  };
+
   return (
     <OnboardingLayout
       currentStep={2}
@@ -39,6 +44,16 @@ const LinkedInProfile = () => {
       title="Share your LinkedIn profile to help us create your profile with the right information."
       subtitle="Feel free to make any changes."
     >
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={handleBack}
+        className="mb-6 h-10 px-4 text-base"
+        aria-label="Go back to previous step"
+      >
+        <ArrowLeft className="w-4 h-4 mr-2" />
+        Back
+      </Button>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="linkedin" className="text-base">LinkedIn URL</Label>
