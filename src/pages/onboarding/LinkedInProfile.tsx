@@ -48,10 +48,10 @@ const LinkedInProfile = () => {
         type="button"
         variant="ghost"
         onClick={handleBack}
-        className="mb-6 h-10 px-4 text-base"
-        aria-label="Go back to previous step"
+        className="mb-6 h-12 px-4 text-base min-h-[40px] min-w-[40px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        aria-label="Back"
       >
-        <ArrowLeft className="w-4 h-4 mr-2" />
+        <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" />
         Back
       </Button>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -73,7 +73,7 @@ const LinkedInProfile = () => {
 
         <Button 
           type="submit" 
-          className="w-full h-12 text-base"
+          className="w-full h-12 text-base min-h-[40px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           disabled={!linkedinUrl || isLoading}
         >
           {isLoading ? "Fetching your profile..." : "Continue"}

@@ -55,10 +55,7 @@ const ReviewDetails = () => {
     navigate('/onboarding/linkedin');
   };
 
-  const bioCharacterLimit = 6000;
-  const isOverLimit = bio.length > bioCharacterLimit;
-  const overLimitText = isOverLimit ? bio.slice(bioCharacterLimit) : '';
-  const validText = isOverLimit ? bio.slice(0, bioCharacterLimit) : bio;
+  const bioCharacterLimit = 600;
 
   return (
     <OnboardingLayout
@@ -71,10 +68,10 @@ const ReviewDetails = () => {
         type="button"
         variant="ghost"
         onClick={handleBack}
-        className="mb-6 h-10 px-4 text-base"
-        aria-label="Go back to previous step"
+        className="mb-6 h-12 px-4 text-base min-h-[40px] min-w-[40px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        aria-label="Back"
       >
-        <ArrowLeft className="w-4 h-4 mr-2" />
+        <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" />
         Back
       </Button>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -146,30 +143,28 @@ const ReviewDetails = () => {
           <Label htmlFor="bio" className="text-base">
             Bio <span className="text-destructive">*</span>
           </Label>
-          <div className="relative">
-            <Textarea
-              id="bio"
-              placeholder="Tell us about your coaching experience..."
-              value={validText}
-              onChange={(e) => setBio(e.target.value)}
-              className="min-h-[120px] text-base"
-              required
-              aria-describedby="bio-error bio-count"
-            />
-            {isOverLimit && (
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="min-h-[120px] p-3 text-base whitespace-pre-wrap break-words opacity-0">
-                  {validText}
-                </div>
-                <span className="text-destructive bg-destructive/10">
-                  {overLimitText}
+          <Textarea
+            id="bio"
+            placeholder="Tell us about your coaching experience..."
+            value={bio}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              if (newValue.length <= bioCharacterLimit) {
+                setBio(newValue);
+              }
+            }}
+            className="min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            required
+            aria-describedby="bio-error bio-count"
+          />
+          <div className="flex justify-between items-center text-base">
+            <div id="bio-count" className={`${bio.length >= bioCharacterLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+              {bio.length}/{bioCharacterLimit} characters
+              {bio.length >= bioCharacterLimit && (
+                <span className="ml-2 text-destructive" role="alert">
+                  Character limit reached
                 </span>
-              </div>
-            )}
-          </div>
-          <div className="flex justify-between items-center text-sm">
-            <div id="bio-count" className={`${bio.length > bioCharacterLimit ? 'text-destructive' : 'text-muted-foreground'}`}>
-              {bio.length.toLocaleString()}/{bioCharacterLimit.toLocaleString()} characters
+              )}
             </div>
             {!bio.trim() && (
               <div id="bio-error" className="text-destructive" role="alert">
@@ -181,7 +176,7 @@ const ReviewDetails = () => {
 
         <Button 
           type="submit" 
-          className="w-full h-12 text-base"
+          className="w-full h-12 text-base min-h-[40px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
           disabled={!bio.trim()}
         >
           Continue
