@@ -16,6 +16,7 @@ const ReviewDetails = () => {
   const [location, setLocation] = useState(user?.location || '');
   const [bio, setBio] = useState(user?.bio || '');
   const [languages, setLanguages] = useState<string[]>(user?.languages || ['English']);
+  const [showBioError, setShowBioError] = useState(false);
   const navigate = useNavigate();
 
   const locationOptions = [
@@ -41,13 +42,16 @@ const ReviewDetails = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bio.trim() || bio.length > bioCharacterLimit) {
-      if (bio.length > bioCharacterLimit) {
-        // Focus stays on bio field for accessibility
-        document.getElementById('bio')?.focus();
-      }
+    if (!bio.trim()) {
+      setShowBioError(true);
       return;
     }
+    if (bio.length > bioCharacterLimit) {
+      setShowBioError(true);
+      document.getElementById('bio')?.focus();
+      return;
+    }
+    setShowBioError(false);
     updateUser({
       name,
       location,
@@ -152,40 +156,29 @@ const ReviewDetails = () => {
           <Label htmlFor="bio" className="text-base">
             Bio <span className="text-destructive">*</span>
           </Label>
-          <div className="relative">
-            <Textarea
-              id="bio"
-              placeholder="Tell us about your coaching experience..."
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              className={`min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${isOverLimit ? 'relative z-10 text-transparent caret-foreground bg-transparent' : ''}`}
-              required
-              aria-describedby="bio-error bio-count"
-              style={isOverLimit ? { caretColor: 'hsl(var(--foreground))' } : {}}
-            />
-            {isOverLimit && (
-              <div className="absolute inset-0 p-3 text-base whitespace-pre-wrap break-words pointer-events-none overflow-hidden rounded-md border border-input bg-background z-0">
-                <span className="text-foreground">{validText}</span>
-                <span className="text-destructive font-medium">{overLimitText}</span>
-              </div>
-            )}
-          </div>
+          <Textarea
+            id="bio"
+            placeholder="Tell us about your coaching experience..."
+            value={bio}
+            onChange={(e) => {
+              setBio(e.target.value);
+              if (showBioError) setShowBioError(false);
+            }}
+            className="min-h-[120px] text-base focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            required
+            aria-describedby="bio-count bio-error"
+          />
           <div className="space-y-1">
-            <div id="bio-count" className="text-base">
-              <span className={bio.length > bioCharacterLimit ? 'text-destructive font-medium' : 'text-muted-foreground'}>
-                {bio.length}/{bioCharacterLimit} characters
-              </span>
-              {bio.length > bioCharacterLimit && (
-                <span className="text-destructive font-medium"> - Limit exceeded</span>
-              )}
+            <div id="bio-count" className="text-base text-muted-foreground">
+              {bio.length}/{bioCharacterLimit} characters
             </div>
-            {!bio.trim() && (
+            {showBioError && !bio.trim() && (
               <div id="bio-error" className="text-destructive text-base" role="alert">
                 Bio is required
               </div>
             )}
-            {bio.trim() && bio.length > bioCharacterLimit && (
-              <div className="text-destructive text-base" role="alert">
+            {showBioError && bio.trim() && bio.length > bioCharacterLimit && (
+              <div id="bio-error" className="text-destructive text-base" role="alert">
                 Please reduce your bio to 600 characters or fewer.
               </div>
             )}
@@ -195,7 +188,7 @@ const ReviewDetails = () => {
         <Button 
           type="submit" 
           className="w-full h-12 text-base min-h-[40px] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-          disabled={!bio.trim() || bio.length > bioCharacterLimit}
+          disabled={false}
         >
           Continue
         </Button>
